@@ -1,0 +1,23 @@
+{
+  "name": "multimethod.js",
+  "version": "0.0.1",
+  "description": "Multimethods in JavaScript (ala Clojure)",
+  "main": "index.js",
+  "scripts": {
+    "test": "jasmine-node ./spec"
+  },
+  "keywords": [
+    "multimethods",
+    "polymorphism",
+    "composition"
+  ],
+  "author": "Stan Rozenraukh <stan@stanistan.com>",
+  "license": "BSD-2-Clause",
+  "devDependencies": {
+    "jasmine-node": "~1.14.3"
+  },
+  "dependencies": {
+    "requirejs": "~2.1.11",
+    "underscore": "~1.6.0"
+  }
+}
