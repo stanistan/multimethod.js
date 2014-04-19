@@ -12,7 +12,12 @@
     "composition"
   ],
   "author": "Stan Rozenraukh <stan@stanistan.com>",
-  "license": "BSD-2-Clause",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/stanistan/multimethod.js/LICENSE"
+    }
+  ],
   "devDependencies": {
     "jasmine-node": "~1.14.3"
   },
