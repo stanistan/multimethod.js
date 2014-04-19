@@ -9,6 +9,10 @@ define(function(require) {
       _ = require('underscore'),
       apply = require('./src/common').apply;
 
+  var asFunction = function(value) {
+    return _.isFunction(value) ? value : (function() { return value; });
+  };
+
   /**
    * @param {Function} dispatcher
    * @param {Function} defaultDispatch (optional)
@@ -24,7 +28,7 @@ define(function(require) {
     }
 
     dispatches = dispatches || [];
-    defaultDispatch = defaultDispatch || function() { throw "No default dispatch; "};
+    defaultDispatch = defaultDispatch || (function() { throw "No default dispatch; "});
 
     var boundMulti = _.partial(multi, dispatcher, defaultDispatch);
 
@@ -38,7 +42,7 @@ define(function(require) {
     };
 
     fn.add = function(on, exec) {
-      return boundMulti(Dispatch.add(dispatches, [on, exec]));
+      return boundMulti(Dispatch.add(dispatches, [on, asFunction(exec)]));
     };
 
     fn.has = function(on) {
