@@ -20,6 +20,7 @@ define(function(require) {
 
     if (!_.isFunction(dispatcher)) {
       console.error("Dispatcher must be a function", dispatcher);
+      return;
     }
 
     dispatches = dispatches || [];
@@ -27,11 +28,13 @@ define(function(require) {
 
     var boundMulti = _.partial(multi, dispatcher, defaultDispatch);
 
-    // the meat
-    var fn = function() {
+    // The мясо,
+    // Pass in this function as the context so we can do an interesting style
+    // of dispatch recursion
+    var fn = function multimethod() {
       var args = _.toArray(arguments),
           dispatch = Dispatch.find(dispatches, apply(dispatcher, args));
-      return apply(dispatch ? dispatch.exec : defaultDispatch, args);
+      return apply(dispatch ? dispatch.exec : defaultDispatch, args, multimethod);
     };
 
     fn.add = function(on, exec) {
@@ -40,6 +43,10 @@ define(function(require) {
 
     fn.has = function(on) {
       return !!Dispatch.find(dispatches, on);
+    };
+
+    fn.dispatches = function() {
+      return dispatches;
     };
 
     fn.remove = function(on) {
