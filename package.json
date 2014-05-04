@@ -1,6 +1,6 @@
 {
   "name": "multimethod.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Multimethods in JavaScript (ala Clojure)",
   "main": "index.js",
   "scripts": {
