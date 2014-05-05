@@ -62,4 +62,76 @@ describe('multimethods', function() {
     expect(m({a: 1, b: 3, c: 3})).toEqual(2);
   });
 
+  it('can be fancy type based dispatch, kind of', function() {
+
+    var first = function(l) {
+      return l[0];
+    };
+
+    var rest = function(l) {
+      return l.slice(1);
+    };
+
+    var toList = function(l) {
+      return [].slice.call(l);
+    };
+
+    var rotateList = function(l) {
+      var l = toList(l);
+      return rest(l).concat([first(l)]);
+    };
+
+    var getType = function(toTest) {
+
+      var tests = [
+        ['isFunction',  'fn'],
+        ['isString',    'str'],
+        ['isNumber',    'num'],
+        ['isArray',     'arr'],
+        ['isObject',    'map'],
+        ['isBoolean',   'bool'],
+        ['isUndefined', 'undef']
+      ];
+
+      for (var i = 0; i < tests.length; i++) {
+        if (_[tests[i][0]](toTest)) {
+          return tests[i][1];
+        }
+      }
+
+      throw "No idea what this is";
+    };
+
+    var dispatcher = function() {
+      return toList(arguments).map(getType);
+    };
+
+    // weird flexible pluralize
+    var pl =
+      multi(
+        dispatcher,
+        function() {
+          // this will refer to the multimethod
+          // we can do recursive dispatch in this way
+          return this.apply(
+            this,
+            rotateList(arguments)
+          );
+        })
+      .add([], function() { return this(0); })
+      .add(['num', 'str'], function(num, str) { return num.toString() + str; })
+      .add(['num'], function(num) { return this(num, 's'); })
+      .add(['arr'], function(arr) { return this(arr[0], arr[1]); })
+      .add(['map'], function(map) { return this([map.num, map.string]); })
+      .add(['str'], function(str) { return this(0, str); });
+
+    expect(pl('s')).toEqual('0s');
+    expect(pl(1)).toEqual('1s');
+    expect(pl([1, 'something'])).toEqual(pl('something', 1));
+    expect(pl({num: 10, string: 'asdf'})).toEqual(pl(10, 'asdf'));
+    expect(pl({string: 10, num: 'asdf'})).toEqual(pl(10, 'asdf'));
+    expect(pl()).toEqual('0s');
+
+  });
+
 });
